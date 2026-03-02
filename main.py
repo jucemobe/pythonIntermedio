@@ -51,7 +51,28 @@ def demo_factory_push() -> None:
         app_id="producto-app",
     )
 
+def demo_json_stdout_compacto() -> None:
+    separador("7) JSON: salida compacta a stdout")
+    servicio = ServicioAlertas()
+    # Usando la fábrica (no hace falta inyectar explícitamente)
+    servicio.alertar_con_tipo(
+        "json",
+        Notificacion(destino="canal-json", asunto="Ping", mensaje="Hola JSON compacto"),
+        pretty=False,   # una sola línea
+        stream="stdout"
+    )
 
+def demo_json_pretty_a_archivo() -> None:
+    separador("8) JSON: salida pretty a archivo")
+    servicio = ServicioAlertas()
+    servicio.alertar_con_tipo(
+        "json",
+        Notificacion(destino="archivo-json", asunto="Export", mensaje="Volcado a file"),
+        pretty=True,
+        file_path="notificaciones.log",           # archivo en modo append
+        extra={"app": "demo", "env": "dev"}       # campos adicionales
+    )
+    
 def demo_registro_custom_webhook() -> None:
     separador("4) Registrar un canal custom en la fábrica y usarlo (Webhook)")
 
@@ -80,6 +101,33 @@ def demo_registro_custom_webhook() -> None:
         url="https://hooks.internal/alerts",
     )
 
+def demo_json_autotest_visual() -> None:
+    separador("9) Autotest visual de JSON")
+    servicio = ServicioAlertas()
+
+    # 9.1 a stdout (compacto)
+    servicio.alertar_con_tipo(
+        "json",
+        Notificacion(destino="demo", asunto=None, mensaje="Sin asunto OK", metadatos={"k": "v"}),
+        pretty=False,
+        stream="stdout",
+        extra={"trace_id": "abc-123"}
+    )
+
+    # 9.2 a stderr (pretty)
+    servicio.alertar_con_tipo(
+        "json",
+        Notificacion(destino="demo-stderr", asunto="Pretty", mensaje="Por stderr"),
+        pretty=True,
+        stream="stderr"
+    )
+
+    # 9.3 a archivo
+    servicio.alertar_con_tipo(
+        "json",
+        Notificacion(destino="fichero", mensaje="A archivo"),
+        file_path="notificaciones.log"
+    )
 
 def demo_errores_validacion() -> None:
     separador("5) Manejo básico de errores (validaciones por canal)")
@@ -112,7 +160,10 @@ def main() -> None:
     demo_registro_custom_webhook()
     demo_errores_validacion()
     demo_cambio_dinamico_de_canal()
-
+    # Nuevas pruebas JSON:
+    demo_json_stdout_compacto()
+    demo_json_pretty_a_archivo()
+    demo_json_autotest_visual()
 
 if __name__ == "__main__":
     main()
