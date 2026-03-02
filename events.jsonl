@@ -2,3 +2,7 @@
 {"type": "event", "name": "logout", "ts": "2026-03-02T20:17:47.334476+00:00", "count": 1}
 {"type": "event", "name": "error", "ts": "2026-03-02T20:17:47.335554+00:00", "count": 1}
 {"type": "event", "name": "login", "ts": "2026-03-02T20:17:47.335554+00:00", "count": 2}
+{"type": "event", "name": "login", "ts": "2026-03-02T20:26:26.928332+00:00", "count": 1}
+{"type": "event", "name": "logout", "ts": "2026-03-02T20:26:26.929813+00:00", "count": 1}
+{"type": "event", "name": "error", "ts": "2026-03-02T20:26:26.930824+00:00", "count": 1}
+{"type": "event", "name": "login", "ts": "2026-03-02T20:26:26.930824+00:00", "count": 2}
