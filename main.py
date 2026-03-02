@@ -1,169 +1,199 @@
-# main.py
-# Ejemplos de uso del sistema de notificaciones + servicio de alertas.
-# Asegúrate de tener el archivo 'notificaciones.py' en la misma carpeta
-# con las clases: Notificacion, Notificador, SmsNotificador, EmailNotificador,
-# PushNotificador, NotificadorFactory, ServicioAlertas
+# # # main.py
+# # # Ejemplos de uso del sistema de notificaciones + servicio de alertas.
+# # # Asegúrate de tener el archivo 'notificaciones.py' en la misma carpeta
+# # # con las clases: Notificacion, Notificador, SmsNotificador, EmailNotificador,
+# # # PushNotificador, NotificadorFactory, ServicioAlertas
 
-from notificaciones import (
-    Notificacion,
-    SmsNotificador,
-    EmailNotificador,
-    PushNotificador,
-    NotificadorFactory,
-    ServicioAlertas,
-)
-
-
-def separador(titulo: str) -> None:
-    print("\n" + "=" * 80)
-    print(titulo)
-    print("=" * 80)
+# # from notificaciones import (
+# #     Notificacion,
+# #     SmsNotificador,
+# #     EmailNotificador,
+# #     PushNotificador,
+# #     NotificadorFactory,
+# #     ServicioAlertas,
+# # )
 
 
-def demo_inyeccion_sms() -> None:
-    separador("1) Inyección directa: SMS")
-    servicio = ServicioAlertas(notificador=SmsNotificador(proveedor="Twilio", remitente="MiApp"))
-    servicio.alertar(Notificacion(destino="+34123456789", mensaje="Tu código es 123456"))
+# # def separador(titulo: str) -> None:
+# #     print("\n" + "=" * 80)
+# #     print(titulo)
+# #     print("=" * 80)
 
 
-def demo_inyeccion_email() -> None:
-    separador("2) Cambiar a Email por inyección")
-    servicio = ServicioAlertas()
-    servicio.configurar_notificador(
-        EmailNotificador(smtp_host="smtp.miempresa.com", remitente="alertas@miempresa.com")
-    )
-    servicio.alertar(
-        Notificacion(
-            destino="usuario@correo.com",
-            asunto="Aviso de seguridad",
-            mensaje="Se detectó un acceso inusual a tu cuenta.",
-        )
-    )
+# # def demo_inyeccion_sms() -> None:
+# #     separador("1) Inyección directa: SMS")
+# #     servicio = ServicioAlertas(notificador=SmsNotificador(proveedor="Twilio", remitente="MiApp"))
+# #     servicio.alertar(Notificacion(destino="+34123456789", mensaje="Tu código es 123456"))
 
 
-def demo_factory_push() -> None:
-    separador("3) Uso de fábrica: Push")
-    servicio = ServicioAlertas()
-    servicio.alertar_con_tipo(
-        "push",
-        Notificacion(destino="DEVICE_TOKEN_ABC", asunto="Recordatorio", mensaje="Tienes una tarea pendiente."),
-        proveedor="FCM",
-        app_id="producto-app",
-    )
+# # def demo_inyeccion_email() -> None:
+# #     separador("2) Cambiar a Email por inyección")
+# #     servicio = ServicioAlertas()
+# #     servicio.configurar_notificador(
+# #         EmailNotificador(smtp_host="smtp.miempresa.com", remitente="alertas@miempresa.com")
+# #     )
+# #     servicio.alertar(
+# #         Notificacion(
+# #             destino="usuario@correo.com",
+# #             asunto="Aviso de seguridad",
+# #             mensaje="Se detectó un acceso inusual a tu cuenta.",
+# #         )
+# #     )
 
-def demo_json_stdout_compacto() -> None:
-    separador("7) JSON: salida compacta a stdout")
-    servicio = ServicioAlertas()
-    # Usando la fábrica (no hace falta inyectar explícitamente)
-    servicio.alertar_con_tipo(
-        "json",
-        Notificacion(destino="canal-json", asunto="Ping", mensaje="Hola JSON compacto"),
-        pretty=False,   # una sola línea
-        stream="stdout"
-    )
 
-def demo_json_pretty_a_archivo() -> None:
-    separador("8) JSON: salida pretty a archivo")
-    servicio = ServicioAlertas()
-    servicio.alertar_con_tipo(
-        "json",
-        Notificacion(destino="archivo-json", asunto="Export", mensaje="Volcado a file"),
-        pretty=True,
-        file_path="notificaciones.log",           # archivo en modo append
-        extra={"app": "demo", "env": "dev"}       # campos adicionales
-    )
+# # def demo_factory_push() -> None:
+# #     separador("3) Uso de fábrica: Push")
+# #     servicio = ServicioAlertas()
+# #     servicio.alertar_con_tipo(
+# #         "push",
+# #         Notificacion(destino="DEVICE_TOKEN_ABC", asunto="Recordatorio", mensaje="Tienes una tarea pendiente."),
+# #         proveedor="FCM",
+# #         app_id="producto-app",
+# #     )
+
+# # def demo_json_stdout_compacto() -> None:
+# #     separador("7) JSON: salida compacta a stdout")
+# #     servicio = ServicioAlertas()
+# #     # Usando la fábrica (no hace falta inyectar explícitamente)
+# #     servicio.alertar_con_tipo(
+# #         "json",
+# #         Notificacion(destino="canal-json", asunto="Ping", mensaje="Hola JSON compacto"),
+# #         pretty=False,   # una sola línea
+# #         stream="stdout"
+# #     )
+
+# # def demo_json_pretty_a_archivo() -> None:
+# #     separador("8) JSON: salida pretty a archivo")
+# #     servicio = ServicioAlertas()
+# #     servicio.alertar_con_tipo(
+# #         "json",
+# #         Notificacion(destino="archivo-json", asunto="Export", mensaje="Volcado a file"),
+# #         pretty=True,
+# #         file_path="notificaciones.log",           # archivo en modo append
+# #         extra={"app": "demo", "env": "dev"}       # campos adicionales
+# #     )
     
-def demo_registro_custom_webhook() -> None:
-    separador("4) Registrar un canal custom en la fábrica y usarlo (Webhook)")
+# # def demo_registro_custom_webhook() -> None:
+# #     separador("4) Registrar un canal custom en la fábrica y usarlo (Webhook)")
 
-    # Definimos un notificador personalizado (p. ej., Webhook) sin tocar el servicio ni la fábrica:
-    from notificaciones import Notificador  # usamos la interfaz para heredar
+# #     # Definimos un notificador personalizado (p. ej., Webhook) sin tocar el servicio ni la fábrica:
+# #     from notificaciones import Notificador  # usamos la interfaz para heredar
 
-    class WebhookNotificador(Notificador):
-        def __init__(self, url: str):
-            self.url = url
+# #     class WebhookNotificador(Notificador):
+# #         def __init__(self, url: str):
+# #             self.url = url
 
-        def enviar(self, notif: Notificacion) -> None:
-            # Integración real: POST JSON a self.url
-            print(
-                f"[WEBHOOK] POST {self.url} -> "
-                f"{{destino: {notif.destino}, asunto: {notif.asunto}, mensaje: {notif.mensaje}}}"
-            )
+# #         def enviar(self, notif: Notificacion) -> None:
+# #             # Integración real: POST JSON a self.url
+# #             print(
+# #                 f"[WEBHOOK] POST {self.url} -> "
+# #                 f"{{destino: {notif.destino}, asunto: {notif.asunto}, mensaje: {notif.mensaje}}}"
+# #             )
 
-    # Lo registramos dinámicamente en la fábrica:
-    NotificadorFactory.registrar("webhook", WebhookNotificador)
+# #     # Lo registramos dinámicamente en la fábrica:
+# #     NotificadorFactory.registrar("webhook", WebhookNotificador)
 
-    # Y lo usamos a partir del tipo:
-    servicio = ServicioAlertas()
-    servicio.alertar_con_tipo(
-        "webhook",
-        Notificacion(destino="canal-interno", asunto="Build OK", mensaje="CI/CD finalizado."),
-        url="https://hooks.internal/alerts",
-    )
+# #     # Y lo usamos a partir del tipo:
+# #     servicio = ServicioAlertas()
+# #     servicio.alertar_con_tipo(
+# #         "webhook",
+# #         Notificacion(destino="canal-interno", asunto="Build OK", mensaje="CI/CD finalizado."),
+# #         url="https://hooks.internal/alerts",
+# #     )
 
-def demo_json_autotest_visual() -> None:
-    separador("9) Autotest visual de JSON")
-    servicio = ServicioAlertas()
+# # def demo_json_autotest_visual() -> None:
+# #     separador("9) Autotest visual de JSON")
+# #     servicio = ServicioAlertas()
 
-    # 9.1 a stdout (compacto)
-    servicio.alertar_con_tipo(
-        "json",
-        Notificacion(destino="demo", asunto=None, mensaje="Sin asunto OK", metadatos={"k": "v"}),
-        pretty=False,
-        stream="stdout",
-        extra={"trace_id": "abc-123"}
-    )
+# #     # 9.1 a stdout (compacto)
+# #     servicio.alertar_con_tipo(
+# #         "json",
+# #         Notificacion(destino="demo", asunto=None, mensaje="Sin asunto OK", metadatos={"k": "v"}),
+# #         pretty=False,
+# #         stream="stdout",
+# #         extra={"trace_id": "abc-123"}
+# #     )
 
-    # 9.2 a stderr (pretty)
-    servicio.alertar_con_tipo(
-        "json",
-        Notificacion(destino="demo-stderr", asunto="Pretty", mensaje="Por stderr"),
-        pretty=True,
-        stream="stderr"
-    )
+# #     # 9.2 a stderr (pretty)
+# #     servicio.alertar_con_tipo(
+# #         "json",
+# #         Notificacion(destino="demo-stderr", asunto="Pretty", mensaje="Por stderr"),
+# #         pretty=True,
+# #         stream="stderr"
+# #     )
 
-    # 9.3 a archivo
-    servicio.alertar_con_tipo(
-        "json",
-        Notificacion(destino="fichero", mensaje="A archivo"),
-        file_path="notificaciones.log"
-    )
+# #     # 9.3 a archivo
+# #     servicio.alertar_con_tipo(
+# #         "json",
+# #         Notificacion(destino="fichero", mensaje="A archivo"),
+# #         file_path="notificaciones.log"
+# #     )
 
-def demo_errores_validacion() -> None:
-    separador("5) Manejo básico de errores (validaciones por canal)")
-    servicio = ServicioAlertas(notificador=SmsNotificador(proveedor="Twilio"))
-    try:
-        # Falta el destino en SMS → debe lanzar ValueError
-        servicio.alertar(Notificacion(destino="", mensaje="Mensaje sin número"))
-    except ValueError as e:
-        print(f"[OK] Capturado ValueError esperado: {e}")
+# # def demo_errores_validacion() -> None:
+# #     separador("5) Manejo básico de errores (validaciones por canal)")
+# #     servicio = ServicioAlertas(notificador=SmsNotificador(proveedor="Twilio"))
+# #     try:
+# #         # Falta el destino en SMS → debe lanzar ValueError
+# #         servicio.alertar(Notificacion(destino="", mensaje="Mensaje sin número"))
+# #     except ValueError as e:
+# #         print(f"[OK] Capturado ValueError esperado: {e}")
 
-    # Email sin asunto es válido (usa '(sin asunto)')
-    servicio.configurar_notificador(EmailNotificador())
-    servicio.alertar(Notificacion(destino="persona@ejemplo.com", mensaje="Email sin asunto"))
-
-
-def demo_cambio_dinamico_de_canal() -> None:
-    separador("6) Cambio dinámico de canal en tiempo de ejecución")
-    servicio = ServicioAlertas(SmsNotificador())
-    servicio.alertar(Notificacion(destino="+34000000000", mensaje="Enviado por SMS"))
-
-    # Cambiamos a Push sin reconstruir el servicio
-    servicio.configurar_notificador(PushNotificador(proveedor="MockPush", app_id="demo"))
-    servicio.alertar(Notificacion(destino="TOKEN_XYZ", asunto="Hola", mensaje="Ahora por Push"))
+# #     # Email sin asunto es válido (usa '(sin asunto)')
+# #     servicio.configurar_notificador(EmailNotificador())
+# #     servicio.alertar(Notificacion(destino="persona@ejemplo.com", mensaje="Email sin asunto"))
 
 
-def main() -> None:
-    demo_inyeccion_sms()
-    demo_inyeccion_email()
-    demo_factory_push()
-    demo_registro_custom_webhook()
-    demo_errores_validacion()
-    demo_cambio_dinamico_de_canal()
-    # Nuevas pruebas JSON:
-    demo_json_stdout_compacto()
-    demo_json_pretty_a_archivo()
-    demo_json_autotest_visual()
+# # def demo_cambio_dinamico_de_canal() -> None:
+# #     separador("6) Cambio dinámico de canal en tiempo de ejecución")
+# #     servicio = ServicioAlertas(SmsNotificador())
+# #     servicio.alertar(Notificacion(destino="+34000000000", mensaje="Enviado por SMS"))
 
-if __name__ == "__main__":
-    main()
+# #     # Cambiamos a Push sin reconstruir el servicio
+# #     servicio.configurar_notificador(PushNotificador(proveedor="MockPush", app_id="demo"))
+# #     servicio.alertar(Notificacion(destino="TOKEN_XYZ", asunto="Hola", mensaje="Ahora por Push"))
+
+
+# # def main() -> None:
+# #     demo_inyeccion_sms()
+# #     demo_inyeccion_email()
+# #     demo_factory_push()
+# #     demo_registro_custom_webhook()
+# #     demo_errores_validacion()
+# #     demo_cambio_dinamico_de_canal()
+# #     # Nuevas pruebas JSON:
+# #     demo_json_stdout_compacto()
+# #     demo_json_pretty_a_archivo()
+# #     demo_json_autotest_visual()
+
+# # if __name__ == "__main__":
+# #     main()
+from events.bus import EventBus
+from events.handlers import ConsoleEventHandler, JsonEventHandler, TxtEventHandler
+from events.models import CommandEvent
+
+
+def run_demo():
+    # Gestores
+    console = ConsoleEventHandler()
+    json_handler = JsonEventHandler(file_path="events.jsonl", pretty=False)
+    txt_handler = TxtEventHandler(file_path="events.log")
+
+    # Bus con gestores
+    bus = EventBus(console, json_handler, txt_handler)
+
+    # Lista de comandos
+    commands = ["login", "logout", "error", "login"]
+
+    # Ejecutar
+    bus.process(*commands)
+
+    print("\n--- Contador JSON ---")
+    print(json_handler.counts)
+
+    print("\n--- Primeras líneas TXT ---")
+    for line in txt_handler.lines[:2]:
+        print(line)
+
+
+# Ejecutar así:
+# python -c "from main import run_demo; run_demo()"

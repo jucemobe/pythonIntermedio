@@ -1,0 +1,4 @@
+{"type": "event", "name": "login", "ts": "2026-03-02T20:17:47.331262+00:00", "count": 1}
+{"type": "event", "name": "logout", "ts": "2026-03-02T20:17:47.334476+00:00", "count": 1}
+{"type": "event", "name": "error", "ts": "2026-03-02T20:17:47.335554+00:00", "count": 1}
+{"type": "event", "name": "login", "ts": "2026-03-02T20:17:47.335554+00:00", "count": 2}

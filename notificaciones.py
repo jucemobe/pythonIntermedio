@@ -1,3 +1,7 @@
+# --- NUEVO Notificador JSON ---
+import json
+import sys
+
 from abc import ABC, abstractmethod
 
 
@@ -69,21 +73,65 @@ class PushNotificador(Notificador):
         title = notif.asunto or "Notificación"
         print(f"[PUSH/{self.proveedor}] App: {self.app_id} → Token: {notif.destino} :: {title} — {notif.mensaje}")
 
+class JsonNotificador(Notificador):
+    """
+    Emite la notificación en formato JSON.
+    - pretty: si True, salida indentada; si False, compacta en una línea.
+    - stream: 'stdout' (por defecto) o 'stderr'. Ignorado si file_path está definido.
+    - file_path: si se indica, vuelca el JSON línea a línea en el archivo (modo append).
+    - extra: dict opcional para añadir campos adicionales (app, env, trace_id, etc.).
+    """
+    def __init__(self, pretty=False, stream="stdout", file_path=None, extra=None):
+        self.pretty = bool(pretty)
+        self.stream = stream
+        self.file_path = file_path
+        self.extra = extra if isinstance(extra, dict) else {}
 
+    def enviar(self, notif: Notificacion) -> None:
+        payload = {
+            "canal": "json",
+            "destino": notif.destino,
+            "asunto": notif.asunto,
+            "mensaje": notif.mensaje,
+            "metadatos": notif.metadatos,
+        }
+        # Merge "extra" sin sobreescribir claves principales
+        for k, v in self.extra.items():
+            if k not in payload:
+                payload[k] = v
+
+        data = (
+            json.dumps(payload, ensure_ascii=False, indent=2)
+            if self.pretty
+            else json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        )
+
+        # Prioridad archivo si se especifica
+        if self.file_path:
+            with open(self.file_path, "a", encoding="utf-8") as f:
+                f.write(data + "\n")
+            return
+
+        # Si no hay archivo, dirigir a stream
+        if self.stream == "stderr":
+            print(data, file=sys.stderr)
+        else:
+            print(data)  # stdout
+            
 # ==========================================
 # Fábrica (opcional, para crear notificador)
 # ==========================================
 class NotificadorFactory:
-    """Fábrica simple con registro para mapear 'tipo' → clase Notificador."""
     _registry = {
         "sms": SmsNotificador,
         "email": EmailNotificador,
         "push": PushNotificador,
+#        "webhook": WebhookNotificador,  # si lo usas
+        "json": JsonNotificador,        # ← AÑADIR ESTA LÍNEA
     }
 
     @classmethod
     def registrar(cls, tipo: str, clase_notificador) -> None:
-        # clase_notificador debe ser una clase que implemente Notificador
         cls._registry[tipo.lower()] = clase_notificador
 
     @classmethod
@@ -92,10 +140,9 @@ class NotificadorFactory:
         if key not in cls._registry:
             soportados = list(cls._registry.keys())
             raise ValueError(f"Tipo de notificador no soportado: {tipo}. Soportados: {soportados}")
-        # Instanciamos la clase registrada con los kwargs proporcionados
+        # ← CORRECTO: instanciamos la clase registrada
         return cls._registry[key](**kwargs)
-
-
+    
 # ==========================================
 # Servicio de Alertas (usa inyección)
 # ==========================================

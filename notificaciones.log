@@ -1,0 +1,10 @@
+{
+  "canal": "json",
+  "destino": "archivo-json",
+  "asunto": "Export",
+  "mensaje": "Volcado a file",
+  "metadatos": {},
+  "app": "demo",
+  "env": "dev"
+}
+{"canal":"json","destino":"fichero","asunto":null,"mensaje":"A archivo","metadatos":{}}
