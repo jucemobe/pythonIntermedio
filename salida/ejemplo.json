@@ -1,0 +1,13 @@
+{
+  "user": "joaquin",
+  "likes": 121,
+  "activo": true,
+  "perfil": {
+    "rol": "admin",
+    "tags": [
+      "a",
+      "b"
+    ]
+  },
+  "notas": null
+}

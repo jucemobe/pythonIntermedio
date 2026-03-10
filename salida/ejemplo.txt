@@ -1,0 +1,5 @@
+user: joaquin
+likes: 121
+activo: True
+perfil: {"rol": "admin", "tags": ["a", "b"]}
+notas: 
