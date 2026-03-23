@@ -1,6 +1,6 @@
 # test_diccionario.py
 import pytest
-from diccionario import Diccionario
+from diction import Diccionario
 
 # 1 fixture (como pides)
 @pytest.fixture
